@@ -5,12 +5,16 @@ import { connectDB } from './lib/db.js';
 import {clerkMiddleware} from '@clerk/express';
 
 import fs from 'fs';
-import path from 'path';
+import path from "path";
+import { fileURLToPath } from "url";
 
 import cors from 'cors';
 dotenv.config();
 
 const app = express();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT || 3000;
 const FRONTEND_URL = process.env.FRONTEND_URL ;
@@ -40,6 +44,18 @@ if(fs.existsSync(publicDir)){
         res.sendFile(path.join(publicDir, 'index.html'),(err)=>next(err));
     });
 }
+
+app.use(
+  express.static(
+    path.join(__dirname, "../../frontend/dist")
+  )
+);
+
+app.get("*", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "../../frontend/dist/index.html")
+  );
+});
 
 app.listen(PORT,()=>{
     connectDB();
