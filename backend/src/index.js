@@ -1,6 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import User from './models/user.model.js';
+// import User from './models/user.model.js';
 import { connectDB } from './lib/db.js';
 import {clerkMiddleware} from '@clerk/express';
 
@@ -21,9 +21,18 @@ app.use(express.json());
 app.use(cors({origin: FRONTEND_URL,credentials:true}));
 app.use(clerkMiddleware());
 
-app.get("./health",(req,res)=>{
-    res.status(200).json({message:"Server is healthy"})
-})
+app.get("/", (req, res) => {
+    res.json({
+        status: "success",
+        message: "MyChatApp Backend Running"
+    });
+});
+
+app.get("/health", (req, res) => {
+    res.status(200).json({
+        message: "Server is healthy"
+    });
+});
 
 if(fs.existsSync(publicDir)){
     app.use(express.static(publicDir));
